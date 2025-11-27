@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Hook для статьи</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        /* ВАРИАНТ 1: Карточка с персонажами */
+        .quiz-hook-card {
+            background: linear-gradient(135deg, #EF16B0 0%, #ff4dc4 100%);
+            border-radius: 24px;
+            padding: 40px 35px;
+            max-width: 700px;
+            margin: 40px auto;
+            box-shadow: 0 20px 60px rgba(239, 22, 176, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-hook-card::before {
+            content: '★';
+            position: absolute;
+            font-size: 200px;
+            color: rgba(255, 255, 255, 0.1);
+            top: -50px;
+            right: -50px;
+            transform: rotate(15deg);
+        }
+
+        .quiz-hook-badge {
+            background: rgba(255, 255, 255, 0.25);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-hook-title {
+            color: white;
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+
+        .characters-showcase {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .character-mini {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .character-mini:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+        }
+
+        .character-emoji {
+            font-size: 40px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .character-name {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .quiz-hook-text {
+            color: white;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quiz-hook-text strong {
+            font-weight: 800;
+        }
+
+        .quiz-hook-cta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quiz-btn {
+            background: white;
+            color: #EF16B0;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .timer-indicator {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.9;
+        }
+
+        /* ВАРИАНТ 2: Минималистичный баннер */
+        .quiz-hook-minimal {
+            background: linear-gradient(135deg, #181D31 0%, #2a3150 100%);
+            border-radius: 20px;
+            padding: 35px 40px;
+            max-width: 700px;
+            margin: 40px auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .quiz-hook-content {
+            flex: 1;
+        }
+
+        .quiz-hook-minimal .quiz-hook-title {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .quiz-hook-minimal .quiz-hook-text {
+            font-size: 15px;
+            margin-bottom: 0;
+        }
+
+        .quiz-hook-minimal .quiz-btn {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ВАРИАНТ 3: Интерактивная карточка с выбором */
+        .quiz-hook-interactive {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 700px;
+            margin: 40px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 3px solid #EF16B0;
+        }
+
+        .quiz-hook-interactive .quiz-hook-title {
+            color: #181D31;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .quiz-hook-interactive .quiz-hook-text {
+            color: #181D31;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 30px;
+            opacity: 0.7;
+        }
+
+        .interactive-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .interactive-option {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 25px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-option:hover {
+            border-color: #EF16B0;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(239, 22, 176, 0.2);
+        }
+
+        .interactive-option .character-emoji {
+            font-size: 50px;
+            margin-bottom: 12px;
+        }
+
+        .interactive-option .character-name {
+            color: #181D31;
+            font-size: 15px;
+        }
+
+        .quiz-hook-interactive .quiz-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #EF16B0 0%, #ff4dc4 100%);
+            color: white;
+        }
+
+        /* ВАРИАНТ 4: Компактный inline баннер */
+        .quiz-hook-inline {
+            background: linear-gradient(90deg, #EF16B0 0%, #ff4dc4 100%);
+            border-radius: 16px;
+            padding: 25px 30px;
+            max-width: 700px;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .hook-emoji-large {
+            font-size: 60px;
+            flex-shrink: 0;
+        }
+
+        .quiz-hook-inline .quiz-hook-content {
+            flex: 1;
+        }
+
+        .quiz-hook-inline .quiz-hook-title {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .quiz-hook-inline .quiz-hook-text {
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        .quiz-hook-inline .quiz-btn {
+            padding: 14px 28px;
+            font-size: 15px;
+        }
+
+        /* Разделитель для демо */
+        .demo-separator {
+            max-width: 700px;
+            margin: 60px auto;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .demo-separator::before,
+        .demo-separator::after {
+            content: '';
+            display: inline-block;
+            width: 100px;
+            height: 2px;
+            background: #e0e0e0;
+            vertical-align: middle;
+            margin: 0 20px;
+        }
+
+        @media (max-width: 768px) {
+            .characters-showcase {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-hook-minimal {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .quiz-hook-cta {
+                flex-direction: column;
+            }
+
+            .quiz-btn {
+                width: 100%;
+            }
+
+            .interactive-options {
+                grid-template-columns: 1fr;
+            }
+
+            .quiz-hook-inline {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .quiz-hook-title {
+                font-size: 24px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ВАРИАНТ 1: Карточка с персонажами (РЕКОМЕНДУЮ!) -->
+    <div class="quiz-hook-card">
+        <div class="quiz-hook-badge">⚡ Интерактивный тест</div>
+        <h3 class="quiz-hook-title">А кто ты в мире фитнеса?</h3>
+        
+        <div class="characters-showcase">
+            <div class="character-mini">
+                <span class="character-emoji">🔥</span>
+                <div class="character-name">Железный Дуров</div>
+            </div>
+            <div class="character-mini">
+                <span class="character-emoji">💪</span>
+                <div class="character-name">Здоровый баланс</div>
+            </div>
+            <div class="character-mini">
+                <span class="character-emoji">🌟</span>
+                <div class="character-name">Диванный философ</div>
+            </div>
+        </div>
+
+        <p class="quiz-hook-text">
+            Павел Дуров тренируется каждый день и живёт по режиму. 
+            А ты <strong>железный Дуров</strong> или пока <strong>диванный философ</strong>? 
+            Узнай свой типаж и получи <strong>персональный план тренировок</strong>!
+        </p>
+
+        <div class="quiz-hook-cta">
+            <button class="quiz-btn" onclick="openQuiz()">Узнать свой типаж →</button>
+            <div class="timer-indicator">
+                <span>⏱</span>
+                <span>Всего 60 секунд</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-separator">ДРУГИЕ ВАРИАНТЫ</div>
+
+    <!-- ВАРИАНТ 2: Минималистичный -->
+    <div class="quiz-hook-minimal">
+        <div class="quiz-hook-content">
+            <h3 class="quiz-hook-title">Железный Дуров или диванный философ?</h3>
+            <p class="quiz-hook-text">
+                Узнай за 60 секунд + получи персональный план тренировок под твой уровень
+            </p>
+        </div>
+        <button class="quiz-btn" onclick="openQuiz()">Пройти тест</button>
+    </div>
+
+    <div class="demo-separator">ИЛИ</div>
+
+    <!-- ВАРИАНТ 3: Интерактивный с выбором -->
+    <div class="quiz-hook-interactive">
+        <h3 class="quiz-hook-title">Узнай свой типаж в фитнесе</h3>
+        <p class="quiz-hook-text">
+            Выбери, кто тебе ближе, и получи персональные рекомендации
+        </p>
+        
+        <div class="interactive-options">
+            <div class="interactive-option" onclick="openQuiz()">
+                <span class="character-emoji">🔥</span>
+                <div class="character-name">Железный<br>Дуров</div>
+            </div>
+            <div class="interactive-option" onclick="openQuiz()">
+                <span class="character-emoji">💪</span>
+                <div class="character-name">Здоровый<br>баланс</div>
+            </div>
+            <div class="interactive-option" onclick="openQuiz()">
+                <span class="character-emoji">🌟</span>
+                <div class="character-name">Диванный<br>философ</div>
+            </div>
+        </div>
+        
+        <button class="quiz-btn" onclick="openQuiz()">Пройти тест за 60 секунд →</button>
+    </div>
+
+    <div class="demo-separator">ИЛИ</div>
+
+    <!-- ВАРИАНТ 4: Компактный inline -->
+    <div class="quiz-hook-inline">
+        <div class="hook-emoji-large">🎯</div>
+        <div class="quiz-hook-content">
+            <h3 class="quiz-hook-title">Проверь себя: сможешь ли ты как Дуров?</h3>
+            <p class="quiz-hook-text">
+                Узнай свой типаж за 60 сек + получи план тренировок
+            </p>
+        </div>
+        <button class="quiz-btn" onclick="openQuiz()">Тест →</button>
+    </div>
+
+    <script>
+        function openQuiz() {
+            // Здесь открывается квиз
+            alert('Открывается квиз! В реальности здесь будет:\n\n1. Открыть квиз в модальном окне\n2. Или перейти на страницу квиза\n3. Или развернуть квиз прямо в статье');
+            
+            // Пример: открыть в новой вкладке
+            // window.open('fitstars_snapshot_quiz.html', '_blank');
+            
+            // Или показать модалку с квизом
+            // showQuizModal();
+            
+            // Или скроллить к встроенному квизу
+            // document.getElementById('quiz-section').scrollIntoView({behavior: 'smooth'});
+        }
+
+        // Track клик по хуку
+        document.querySelectorAll('.quiz-btn, .interactive-option').forEach(element => {
+            element.addEventListener('click', function() {
+                if (window.gtag) {
+                    gtag('event', 'quiz_hook_click', {
+                        'hook_type': this.closest('[class*="quiz-hook"]').className
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
