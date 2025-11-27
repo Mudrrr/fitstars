@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Твой уровень самодисциплины — FitStars Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #EEF1F5 0%, #F8F8F8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(24, 29, 49, 0.1);
+            max-width: 700px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #181D31 0%, #2a3150 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .star-decoration {
+            position: absolute;
+            color: #EF16B0;
+            font-size: 100px;
+            opacity: 0.1;
+            top: -20px;
+            right: -20px;
+        }
+
+        .quiz-logo {
+            color: #EF16B0;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .quiz-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .quiz-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            margin-top: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #EF16B0 0%, #ff4dc4 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 10px;
+        }
+
+        .quiz-body {
+            padding: 40px 30px;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-number {
+            color: #EF16B0;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            color: #181D31;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: #F8F8F8;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 20px 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+            color: #181D31;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: #EEF1F5;
+            border-color: #EF16B0;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: rgba(239, 22, 176, 0.1);
+            border-color: #EF16B0;
+        }
+
+        .option-emoji {
+            font-size: 24px;
+            min-width: 30px;
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+        }
+
+        .result-container.active {
+            display: block;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .result-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            color: #181D31;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .result-score {
+            color: #EF16B0;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .result-description {
+            color: #181D31;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        .email-form {
+            background: #F8F8F8;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .email-form h3 {
+            color: #181D31;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .email-form p {
+            color: #181D31;
+            opacity: 0.7;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .email-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .email-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 16px 20px;
+            border: 2px solid #EEF1F5;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Montserrat', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #EF16B0;
+        }
+
+        .btn {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #EF16B0 0%, #d4139a 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(239, 22, 176, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .intro-screen {
+            text-align: center;
+        }
+
+        .intro-screen.hidden {
+            display: none;
+        }
+
+        .intro-image {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #EF16B0 0%, #ff4dc4 100%);
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .intro-title {
+            color: #181D31;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .intro-description {
+            color: #181D31;
+            opacity: 0.7;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            color: #EF16B0;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .stat-label {
+            color: #181D31;
+            opacity: 0.6;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(106, 207, 62, 0.1);
+            border: 2px solid #6ACF3E;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .success-message.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-message h4 {
+            color: #6ACF3E;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: #181D31;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        @media (max-width: 600px) {
+            .quiz-title {
+                font-size: 22px;
+            }
+
+            .question-text {
+                font-size: 18px;
+            }
+
+            .option {
+                padding: 16px 20px;
+                font-size: 15px;
+            }
+
+            .email-input-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .quiz-header {
+                padding: 30px 20px;
+            }
+
+            .quiz-body {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <div class="star-decoration">★</div>
+            <div class="quiz-logo">
+                ★ FitStars
+            </div>
+            <h1 class="quiz-title">Твой уровень самодисциплины</h1>
+            <p class="quiz-subtitle">Павел Дуров тренируется каждый день. А ты?</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="quiz-body">
+            <!-- Intro Screen -->
+            <div class="intro-screen" id="introScreen">
+                <div class="intro-image">💪</div>
+                <h2 class="intro-title">Узнай свой уровень дисциплины за 2 минуты</h2>
+                <p class="intro-description">
+                    Ответь на 7 вопросов и получи персональный план развития самодисциплины + бонусные материалы для тренировок
+                </p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">7</div>
+                        <div class="stat-label">вопросов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">минуты</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">типа результата</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="startQuiz()">Начать тест</button>
+            </div>
+
+            <!-- Questions -->
+            <div class="question-container" id="q1">
+                <div class="question-number">Вопрос 1 из 7</div>
+                <h2 class="question-text">Как ты относишься к утренним тренировкам?</h2>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <span class="option-emoji">💪</span>
+                        <span>Просыпаюсь и сразу на тренировку</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 3)">
+                        <span class="option-emoji">😊</span>
+                        <span>Иногда получается, иногда нет</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 2)">
+                        <span class="option-emoji">😴</span>
+                        <span>Откладываю будильник 5 раз</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 1)">
+                        <span class="option-emoji">🛌</span>
+                        <span>Какие утренние тренировки?</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q2">
+                <div class="question-number">Вопрос 2 из 7</div>
+                <h2 class="question-text">Сколько раз в неделю ты тренируешься сейчас?</h2>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <span class="option-emoji">🔥</span>
+                        <span>5-7 раз (режим зверя)</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 3)">
+                        <span class="option-emoji">💪</span>
+                        <span>3-4 раза (стабильно)</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 2)">
+                        <span class="option-emoji">🤷</span>
+                        <span>1-2 раза (когда получается)</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 1)">
+                        <span class="option-emoji">📅</span>
+                        <span>Начну с понедельника...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q3">
+                <div class="question-number">Вопрос 3 из 7</div>
+                <h2 class="question-text">Что происходит, когда у тебя плохое настроение?</h2>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <span class="option-emoji">⚡</span>
+                        <span>Иду тренироваться — это мой способ перезагрузки</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 3)">
+                        <span class="option-emoji">😤</span>
+                        <span>Заставляю себя, но через силу</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 2)">
+                        <span class="option-emoji">🤔</span>
+                        <span>Пропускаю тренировку, "завтра отработаю"</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 1)">
+                        <span class="option-emoji">📱</span>
+                        <span>Зависаю в соцсетях с едой</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q4">
+                <div class="question-number">Вопрос 4 из 7</div>
+                <h2 class="question-text">Как ты питаешься?</h2>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <span class="option-emoji">📊</span>
+                        <span>Строго по плану, считаю КБЖУ</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 3)">
+                        <span class="option-emoji">🥗</span>
+                        <span>Стараюсь есть здоровую пищу, но бывают срывы</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 2)">
+                        <span class="option-emoji">🤷</span>
+                        <span>Ем что попало, но иногда контролирую себя</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 1)">
+                        <span class="option-emoji">🍕</span>
+                        <span>Живу по принципу "одна жизнь"</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q5">
+                <div class="question-number">Вопрос 5 из 7</div>
+                <h2 class="question-text">Ты ставишь себе цели в фитнесе?</h2>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <span class="option-emoji">🎯</span>
+                        <span>Да, конкретные и с дедлайнами</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 3)">
+                        <span class="option-emoji">📍</span>
+                        <span>Есть общее направление</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 2)">
+                        <span class="option-emoji">💭</span>
+                        <span>Хочу "просто быть в форме"</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 1)">
+                        <span class="option-emoji">🤔</span>
+                        <span>Какие цели? Главное начать</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q6">
+                <div class="question-number">Вопрос 6 из 7</div>
+                <h2 class="question-text">Самый длинный период регулярных тренировок?</h2>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <span class="option-emoji">🏆</span>
+                        <span>Больше года без перерывов</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 3)">
+                        <span class="option-emoji">📅</span>
+                        <span>3-6 месяцев</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 2)">
+                        <span class="option-emoji">📆</span>
+                        <span>1-2 месяца</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 1)">
+                        <span class="option-emoji">⏰</span>
+                        <span>Пару недель максимум</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container" id="q7">
+                <div class="question-number">Вопрос 7 из 7</div>
+                <h2 class="question-text">Что мешает тренироваться регулярно?</h2>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this, 4)">
+                        <span class="option-emoji">✅</span>
+                        <span>Ничего, это мой приоритет</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 3)">
+                        <span class="option-emoji">⏰</span>
+                        <span>Иногда не хватает времени</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 2)">
+                        <span class="option-emoji">😔</span>
+                        <span>Не хватает мотивации</span>
+                    </div>
+                    <div class="option" onclick="selectOption(this, 1)">
+                        <span class="option-emoji">😰</span>
+                        <span>Много причин: работа, усталость, лень...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result -->
+            <div class="result-container" id="resultContainer">
+                <div class="result-emoji" id="resultEmoji"></div>
+                <h2 class="result-title" id="resultTitle"></h2>
+                <div class="result-score" id="resultScore"></div>
+                <p class="result-description" id="resultDescription"></p>
+
+                <div class="email-form">
+                    <h3>🎁 Получи персональный план развития</h3>
+                    <p id="leadMagnetText"></p>
+                    <div class="email-input-group">
+                        <input 
+                            type="email" 
+                            class="email-input" 
+                            placeholder="Твой email" 
+                            id="emailInput"
+                            required
+                        >
+                        <button class="btn btn-primary" onclick="submitEmail()">Получить</button>
+                    </div>
+                </div>
+
+                <div class="success-message" id="successMessage">
+                    <h4>✅ Отлично!</h4>
+                    <p>Проверь почту — мы отправили твой персональный план и бонусные материалы</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let totalScore = 0;
+        const totalQuestions = 7;
+
+        const results = {
+            iron: {
+                emoji: '🔥',
+                title: 'Железный Дуров',
+                minScore: 25,
+                discipline: '95%',
+                description: 'Ты машина! Твоя дисциплина на уровне топ-1%. Ты тренируешься регулярно, у тебя железная воля, и препятствия тебя только мотивируют.',
+                leadMagnet: 'Гайд "Как выйти на новый уровень: 10 хаков для профи" + эксклюзивная программа тренировок'
+            },
+            stable: {
+                emoji: '💪',
+                title: 'Стабильный боец',
+                minScore: 18,
+                discipline: '70%',
+                description: 'У тебя отличная база! Ты тренируешься регулярно, но иногда бывают срывы. С правильной системой ты легко выйдешь на новый уровень.',
+                leadMagnet: 'Чек-лист "Как тренироваться 5 раз в неделю без срывов" + план питания на неделю'
+            },
+            beginner: {
+                emoji: '🎯',
+                title: 'Начинающий',
+                minScore: 11,
+                discipline: '45%',
+                description: 'Потенциал есть, но нужна система. Ты хочешь тренироваться, но пока не выработал стабильную привычку. Давай это исправим!',
+                leadMagnet: 'План "21 день к железной дисциплине" + трекер привычек + мотивационные материалы'
+            },
+            starter: {
+                emoji: '🌱',
+                title: 'Хочу, но не могу',
+                minScore: 0,
+                discipline: '20%',
+                description: 'Честность с собой — это первый и самый важный шаг! Ты осознал проблему, и теперь мы можем начать работать над решением. Начнём с малого.',
+                leadMagnet: 'Гайд "Старт без стресса: 10-минутные тренировки" + чек-лист первого месяца + поддержка куратора'
+            }
+        };
+
+        function startQuiz() {
+            document.getElementById('introScreen').classList.add('hidden');
+            showQuestion(1);
+            updateProgress();
+        }
+
+        function showQuestion(questionNum) {
+            const questions = document.querySelectorAll('.question-container');
+            questions.forEach(q => q.classList.remove('active'));
+            
+            const currentQ = document.getElementById(`q${questionNum}`);
+            if (currentQ) {
+                currentQ.classList.add('active');
+            }
+            
+            currentQuestion = questionNum;
+        }
+
+        function selectOption(element, score) {
+            // Remove previous selection
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selection to clicked option
+            element.classList.add('selected');
+            
+            // Add score
+            totalScore += score;
+            
+            // Move to next question after short delay
+            setTimeout(() => {
+                if (currentQuestion < totalQuestions) {
+                    showQuestion(currentQuestion + 1);
+                    updateProgress();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function updateProgress() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function showResult() {
+            document.querySelectorAll('.question-container').forEach(q => {
+                q.classList.remove('active');
+            });
+            
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.classList.add('active');
+            
+            let result;
+            if (totalScore >= results.iron.minScore) {
+                result = results.iron;
+            } else if (totalScore >= results.stable.minScore) {
+                result = results.stable;
+            } else if (totalScore >= results.beginner.minScore) {
+                result = results.beginner;
+            } else {
+                result = results.starter;
+            }
+            
+            document.getElementById('resultEmoji').textContent = result.emoji;
+            document.getElementById('resultTitle').textContent = result.title;
+            document.getElementById('resultScore').textContent = `Уровень дисциплины: ${result.discipline}`;
+            document.getElementById('resultDescription').textContent = result.description;
+            document.getElementById('leadMagnetText').textContent = result.leadMagnet;
+            
+            updateProgress();
+        }
+
+        function submitEmail() {
+            const emailInput = document.getElementById('emailInput');
+            const email = emailInput.value.trim();
+            
+            if (!email || !email.includes('@')) {
+                alert('Пожалуйста, введи корректный email');
+                return;
+            }
+            
+            // Here you would send the email to your backend
+            console.log('Email submitted:', email);
+            console.log('Score:', totalScore);
+            
+            // Show success message
+            document.querySelector('.email-form').style.display = 'none';
+            document.getElementById('successMessage').classList.add('active');
+            
+            // Track conversion
+            if (window.gtag) {
+                gtag('event', 'quiz_completed', {
+                    'event_category': 'Quiz',
+                    'event_label': 'Discipline Quiz',
+                    'value': totalScore
+                });
+            }
+        }
+
+        // Update progress on load
+        updateProgress();
+    </script>
+</body>
+</html>
